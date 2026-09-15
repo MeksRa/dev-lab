@@ -45,13 +45,13 @@ u_frozenset = frozenset({1, 2, 3}) # immutable set, can't be changed
 # set.add() / set.remove() / set.discard()
 
 # Dynamically typed language means we can change the type of a variable at runtime.
-number = 10
-print(number)
-print(type(number)) # => <class 'int'>
+variable = 10
+print(variable)
+print(type(variable)) # => <class 'int'>
 
-number = 'ten'
-print(number)
-print(type(number)) # => <class 'str'>
+variable = 'ten'
+print(variable)
+print(type(variable)) # => <class 'str'>
 
 number: int = 10 # type hint. just annotates the variable with a type, but doesn't enforce it.
 text: str = '100'
