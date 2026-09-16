@@ -31,7 +31,7 @@ empty: set = set()  # set()
 # Frozensets => exactly the same as regular sets, but immutable
 things: frozenset = frozenset({99, True, "Bob"})
 
-# Dictionaries
+# Dictionaries # key: value
 users: dict = {}  # empty dict
 users: dict = {"Bob": 1}  # a Key and a Value pair
 # users: dict = {1: "Bob"}  # you can also use it as 1 is a key, Bob is a value
