@@ -4,7 +4,7 @@
 * `Ctrl + Shift + P` - Command Palette
 * `Shift + Alt + F` - Auto-formatting `Ruff`
 * `Ctrl + ,` - Settings
-* `Ctrl + ` - Terminal
+* `Ctrl + ` ` - Terminal
 * `Shift + Numpad+` - Increase font size
 * `Shift + Numpad-` - Decrease font size
 * `Numpad/` - Run Python file
