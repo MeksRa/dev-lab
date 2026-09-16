@@ -23,6 +23,7 @@
 * `git reset --soft HEAD~1` — Undo last commit, keep changes staged in your workspace ==> before push
 * `git reset --hard HEAD~1` — Undo last commit and DISCARD all changes 
 (cannot be easily undone) ==> before push
+* `git commit --amend -m "text"` - Change the last commit message
 
 ## Git Connection
 * `git config --global user.name 'username'`
