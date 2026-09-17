@@ -47,3 +47,23 @@ if condition:  # long version
 else:
     var: str = "false"
 print(var)
+
+
+# Difference between several 'if' and 'if-elif' chains
+
+score: int = 85
+# Only the first matching condition executes
+if score >= 80:
+    print("Grade: B")  # This runs
+elif score >= 70:
+    print("Grade: C")  # Skipped
+elif score >= 60:
+    print("Grade: D")  # Skipped
+
+# Every condition is checked independently; multiple blocks can execute
+if score >= 80:
+    print("10% Discount")  # This runs
+if score >= 70:
+    print("5% Discount")  # This runs
+if score >= 60:
+    print("2% Discount")  # This runs
