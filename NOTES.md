@@ -13,6 +13,9 @@
 * `ctrl + C` - Stop the program
 * `Ctrl + Backtick` - Open the Terminal
 
+## Win Hot keys
+* `win + .` - Windows Emoji
+
 ## Git Commands
 * `git status`
 * `git branch`
@@ -21,6 +24,7 @@
 * `git push`
 * `git mv old_name.py new_name.py`
 * `git checkout -- file.py`
+* `git log --oneline -n 3` - show the last 3 commits, each on a single line
 
 ## Git Undo Operations
 * `git revert commit_hash` — Safely undoes a commit by creating a new commit (history stays intact) ==> after push
