@@ -24,6 +24,7 @@
 * `git reset --hard HEAD~1` — Undo last commit and DISCARD all changes 
 (cannot be easily undone) ==> before push
 * `git commit --amend -m "text"` - Change the last commit message
+* `git restore --staged file_name` - Unstage file
 
 ## Git Connection
 * `git config --global user.name 'username'`
