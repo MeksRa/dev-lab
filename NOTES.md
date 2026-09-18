@@ -6,7 +6,8 @@
 * `Ctrl + ,` - Settings
 * `Shift + Numpad+` - Increase font size
 * `Shift + Numpad-` - Decrease font size
-* `Numpad/` - Run Python file
+* `Numpad/` - Run a file
+* `F2` - Rename all selected words
 
 ## Terminal
 * `cls` - Clear the terminal
@@ -27,9 +28,9 @@
 * `git log --oneline -n 3` - show the last 3 commits, each on a single line
 
 ## Git Undo Operations
-* `git revert commit_hash` — Safely undoes a commit by creating a new commit (history stays intact) ==> after push
-* `git reset --soft HEAD~1` — Undo last commit, keep changes staged in your workspace ==> before push
-* `git reset --hard HEAD~1` — Undo last commit and DISCARD all changes 
+* `git revert commit_hash` - Safely undoes a commit by creating a new commit (history stays intact) ==> after push
+* `git reset --soft HEAD~1` -Undo last commit, keep changes staged in your workspace ==> before push
+* `git reset --hard HEAD~1` - Undo last commit and DISCARD all changes 
 (cannot be easily undone) ==> before push
 * `git commit --amend -m "text"` - Change the last commit message
 * `git restore --staged file_name` - Unstage file
