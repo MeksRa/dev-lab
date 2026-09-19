@@ -1,0 +1,14 @@
+{
+  "Python main function": {
+    "prefix": "main",
+    "body": [
+      "def main() -> None:",
+      "    ${0:pass}",
+      "",
+	  "",
+      "if __name__ == \"__main__\":",
+      "    main()"
+    ],
+    "description": "Create a Python main function"
+  }
+}
