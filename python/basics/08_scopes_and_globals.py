@@ -7,7 +7,7 @@ number: int = 999  # global / outer scope/ outermost layer of this script
 
 # create a new function => create a new scope (won't be visible to the outer layer)
 def change_number() -> None:
-    number = 10  # inner / local scope  # noqa: F841
+    number = 10  # inner / local scope
     var = "a"
 
     # Everything in the outer layer will always be visible to what's inside the inner layer
