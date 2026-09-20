@@ -63,6 +63,7 @@
 
 * `git clone`
 * `python -m venv .venv` - Create venv
+* `Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser` - Remove the restriction
 * `.\.venv\Scripts\Activate.ps1` - Activate venv
 * `deactivate`
 * `pip install <smth>`
