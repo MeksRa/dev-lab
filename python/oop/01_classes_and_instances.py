@@ -86,21 +86,89 @@ def third_example() -> None:
     # Let's create a few instances of this fruit
     apple: Fruit = Fruit("Apple", 25)  # apple now is associated with apple instance
     print(apple.name)  # Apple
-    apple.eat()
+    apple.eat()  # Eating 25g of Apple
 
     banana: Fruit = Fruit("Banana", 10)
     print(banana.name)  # Banana
-    banana.eat()
+    banana.eat()  # Eating 10g of Banana
     # 'self' makes sure that "("Banana", 10)" stays only in banana instance
 
 
 # 04) Attributes (Class & Instance)
+# With self we can define instance attributes which are any attributes that belongs to the class
+
+# All the variables and functions inside the class are named as attributes.
+# Instance attributes => self.name ; Class attributes => general variables for each object of the class
+# function inside a class is a method.
+# first argument is 'self', serves as a link to object.
+
+# Usually we use Class attributes to tell python that this info should be shared amongs all the instances(not the classes)
+
+
+class Vehicle:
+    SPEED_LIMIT_KM: float = 140  # Class Attribute (shares amongs all the instances)
+
+    def __init__(self, brand: str) -> None:  # define instance atr inside initializer
+        self.brand = brand  # Instance Attribute
+
+    def drive(self, *, speed: float) -> None:  # define a drive method;
+        # "*" means "require" key arg
+        if speed > self.SPEED_LIMIT_KM:
+            print(f"Limiter activated: Driving at {self.SPEED_LIMIT_KM}km/h")
+        else:
+            print(f"Driving at {speed}km/h")
+
+
+def fourth_example():
+    toyota: Vehicle = Vehicle("Toyota")
+    bmw: Vehicle = Vehicle("Toyota")
+
+    toyota.drive(speed=200)
+    bmw.drive(speed=210)
+
+    Vehicle.SPEED_LIMIT_KM = 99  # each instance will reach the limit
+    # toyota.SPEED_LIMIT_KM = 99 # => only toyota will reach the speed limit
+    toyota.drive(speed=200)
+    bmw.drive(speed=210)
+
+
+class Animal:
+    # tricks: list[str] = []  # => bad practice to use it like a class attribute here
+
+    def __init__(self, name) -> None:
+        self.name = name
+        self.tricks: list[str] = []
+
+    def teach_trick(self, trick_name: str) -> None:
+        self.tricks.append(trick_name)
+
+
+def fifth_example():
+    cat: Animal = Animal("Helios")
+    dog: Animal = Animal("Boomer")
+
+    cat.teach_trick("Wash dishes")
+    cat.teach_trick("Get a job")
+    print(cat.tricks)
+
+    dog.teach_trick("Do finances")
+    dog.teach_trick("Invest in stocks")
+    print(dog.tricks)
+
+
+# Class => class Car => Blueprint/Template
+# Instance / Object => my_car = Car() => an object created from a blueprint
+# self => self.brand => Pointer to "Me" (to a specific object)
+# Class Attribute => SPEED_LIMIT = 140 => Constant / Setting common to the entire plant
+# Instance Attribute => self.color = "Red" => Personal characterization of a specific object
 
 
 def main() -> None:
     # first_example()
     # second_example()
-    third_example()
+    # third_example()
+    # fourth_example()
+    fifth_example()
 
 
 if __name__ == "__main__":
