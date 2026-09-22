@@ -1,4 +1,3 @@
-# класс с каким-то количеством экземпляров и возможностью через меню работать с несколькими
 # class
 class SpaceShip:
     # Dunder Method Initializer, for modification our objects(instances)
