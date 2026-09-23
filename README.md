@@ -4,8 +4,6 @@
 
 # dev-lab
 
-# dev-lab
-
 Personal development lab for CS theory, code experiments, and learning projects.
 
 ## 📌 Repository Structure
