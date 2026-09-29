@@ -1,5 +1,3 @@
-# 81-85
-
 # print()
 
 print(1, 2, "A", True, ["a", "b"], sep="-", end="!!!\n")  # 1-2-A-True-['a', 'b']!!!
@@ -7,7 +5,7 @@ people: list[str] = ["Mario", "James", "Hannah"]
 print(*people)  # == print("Mario", "James", "Hannah")  # Mario James Hannah
 print(*people, sep=", ", end=".")  # Mario, James, Hannah.
 
-# enumerate
+# enumerate()
 
 elements: list[str] = ["A", "B", "C"]
 enumeration: enumerate = enumerate(elements, start=1)
