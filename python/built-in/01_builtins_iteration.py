@@ -33,3 +33,25 @@ print(round(result, -2))  # 300.0
 print(round(2.333333, 2))  # 2.33
 
 # range()
+
+my_range: range = range(1, 6)
+print(my_range)  # range(1, 6)
+print(list(my_range))  # [1, 2, 3, 4, 5]
+another_range: range = range(0, 10, 2)  # 2 - step
+print(list(another_range))  # [0, 2, 4, 6, 8]
+negative_reversed_range: range = range(-5, 0)
+print(list(negative_reversed_range))  # [-5, -4, -3, -2, -1]
+negative_range: range = range(0, -5, -1)
+print(list(negative_range))  # [0, -1, -2, -3, -4]
+
+# slice()
+
+numbers: list[int] = [1, 2, 3, 4, 5]
+print(numbers[2:4])  # [3, 4]
+text: str = "Hello, world!"
+first_three: slice = slice(0, 3)
+print(text[first_three])  # Hel
+reverse_slice: slice = slice(None, None, -1)  # [::-1]
+print(text[reverse_slice])  # !dlrow ,olleH
+step_two: slice = slice(None, None, 2)
+print(text[step_two])  # Hlo ol!
