@@ -10,6 +10,7 @@
 * `Numpad/` - Run a file
 * `F2` - Rename all selected words
 * `Ctrl + S` - File save
+* `Ctrl + R` - Switch between projects
 
 ## Terminal
 
