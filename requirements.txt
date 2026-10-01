@@ -1,1 +1,2 @@
 -r projects/website_status/requirements.txt
+-r projects/website_status_asyncio/requirements.txt
