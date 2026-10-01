@@ -11,6 +11,10 @@
 * `F2` - Rename all selected words
 * `Ctrl + S` - File save
 * `Ctrl + R` - Switch between projects
+* `Tab` - Add indent to selected
+* `Shift + Tab` - Remove indent to selected
+* `Shift + Alt + Down/up` - Copy selected block
+* `Alt + Down/up` - Move selected block
 
 ## Terminal
 
@@ -20,7 +24,10 @@
 
 ## Win Hot keys
 
-* `win + .` - Windows Emoji
+* `Win + .` - Windows Emoji
+* `Ctrl + Enter` - New line
+* `Fn + Right Arrow` - The end of the line
+* `Fn + Left Arrow` - The beginning of the line
 
 ## Git Commands
 
