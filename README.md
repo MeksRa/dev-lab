@@ -8,10 +8,10 @@ Personal development lab for CS theory, code experiments, and learning projects.
 
 ## 📌 Repository Structure
 
-* **`python/`** — Core Python topics, language mechanics, and structured exercises (basics, functions, OOP, etc.).
-* **`projects/`** — Small completed practical projects and assignments
+* **`algorithms/`** - Useful algorithms
 * **`drafts/`** — Working drafts, code experiments.
-* **`Algorithms`** - Different algorithms
+* **`projects/`** — Small completed practical projects and assignments
+* **`python/`** — Core Python topics, language mechanics, and structured exercises (basics, functions, OOP, etc.).
 * **`snippets/`** — Live templates and editor configurations (JSON).
 * **`NOTES.md`** — Personal cheat sheet for hotkeys, CLI commands, and editor workflows.
 
