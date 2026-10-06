@@ -10,8 +10,8 @@ Personal development lab for CS theory, code experiments, and learning projects.
 
 * **`algorithms/`** - Useful algorithms
 * **`drafts/`** — Working drafts, code experiments.
-* **`projects/`** — Small completed practical projects and assignments
-* **`python/`** — Core Python topics, language mechanics, and structured exercises (basics, functions, OOP, etc.).
+* **`projects/`** — Completed practical projects and assignments
+* **`python/`** — Core Python topics, language mechanics, theory and examples (basics, functions, OOP, etc.).
 * **`snippets/`** — Live templates and editor configurations (JSON).
 * **`NOTES.md`** — Personal cheat sheet for hotkeys, CLI commands, and editor workflows.
 
