@@ -34,7 +34,8 @@ def main() -> None:
     while True:
         dice_count = get_input("How many dice would you like to roll? ")
         dice_results = get_dice(dice_count)
-        print("You rolled:", *dice_results, sep=", ")
+        # map(str, dice_results)  # -> converts numbers into strings
+        print(f"You rolled: {', '.join(map(str, dice_results))}")
         if not play_again():
             print("Thanks for playing!")
             break
