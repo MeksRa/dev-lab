@@ -4,7 +4,13 @@ import string
 import time
 from pathlib import Path
 
+import py7zr
+import pypdf
 import pyzipper
+import rarfile
+
+
+# rarfile.UNRAR_TOOL = r"C:\Program Files\WinRAR\UnRAR.exe"
 
 
 class PasswordCracker:
@@ -15,9 +21,9 @@ class PasswordCracker:
         # Choose type and mode
         self.target_type: str = str(self.config.get("target_type", "string")).lower()
         self.target_value: str = str(self.config.get("target_value", "")).strip()
-        self.mode = self.config.get("mode", "hybrid").lower()
+        self.mode = str(self.config.get("mode", "hybrid")).lower()
 
-        wordlist_name = self.config.get("wordlist_name", "100k_passwords.txt")
+        wordlist_name = str(self.config.get("wordlist_name", "100k_passwords.txt"))
         self.wordlist_path = self.base_dir / "data" / wordlist_name
         self._common_words: set[str] = set()
 
@@ -32,7 +38,7 @@ class PasswordCracker:
             with path.open("r", encoding="utf-8") as f:
                 return json.load(f)
         except json.JSONDecodeError as e:
-            raise ValueError(f"Invalid JSON format in {path.name}: {e}")
+            raise ValueError(f"Invalid JSON format in {path.name}: {e}") from e
 
     def _load_wordlist(self) -> None:
         """Loads the dictionary into a set for O(1) lookup."""
@@ -54,16 +60,51 @@ class PasswordCracker:
 
     def verify_password(self, guess: str) -> bool:
         """Universal router checks: depending on target_type."""
+
+        # 01) String
         if self.target_type == "string":
             return guess == self.target_value
 
+        target_file_path = self.base_dir / self.target_value
+
+        # 2) ZIP (.zip)
         if self.target_type == "zip":
-            archive_path = self.base_dir / self.target_value
             try:
-                with pyzipper.AESZipFile(archive_path) as zf:
+                with pyzipper.AESZipFile(target_file_path) as zf:
                     first_file = zf.namelist()[0]
                     zf.read(first_file, pwd=guess.encode("utf-8"))
                     return True
+            except Exception:  # noqa: BLE001
+                return False
+
+        # 3) 7-Zip (.7z)
+        if self.target_type == "7z":
+            try:
+                with py7zr.SevenZipFile(
+                    target_file_path, mode="r", password=guess
+                ) as szf:
+                    return szf.testzip() is None
+            except Exception:  # noqa: BLE001
+                return False
+
+        # 4) RAR (.rar)
+        if self.target_type == "rar":
+            try:
+                with rarfile.RarFile(target_file_path) as rf:
+                    first_file = rf.namelist()[0]
+                    rf.read(first_file, pwd=guess)
+                    return True
+            except Exception:  # noqa: BLE001
+                return False
+
+        # 5) PDF
+        if self.target_type == "pdf":
+            try:
+                reader = pypdf.PdfReader(target_file_path)
+                if not reader.is_encrypted:
+                    return True
+                # decrypt() return 1 or 2 if succesfully, else 0
+                return bool(reader.decrypt(guess))
             except Exception:  # noqa: BLE001
                 return False
 
@@ -102,8 +143,8 @@ class PasswordCracker:
             charset += string.punctuation
 
         try:
-            min_len = self.config.get("min_length", 1)
-            max_len = self.config.get("max_length", 5)
+            min_len = int(self.config.get("min_length", 1))
+            max_len = int(self.config.get("max_length", 5))
         except ValueError:
             print("[-] Invalid length settings in config.json. Must be integers.")
             return None
@@ -122,6 +163,15 @@ class PasswordCracker:
             for tuple_guess in itertools.product(charset, repeat=length):
                 attempts += 1
                 guess = "".join(tuple_guess)
+
+                # Print progress every 10,000 attempts to show activity
+                if attempts % 10000 == 0:
+                    elapsed = time.perf_counter() - start_time
+                    speed = attempts / elapsed if elapsed > 0 else 0
+                    print(
+                        f"[*] Progress: {attempts:,} attempts | "
+                        f"Current guess: '{guess}' | Speed: {speed:,.0f} att/sec"
+                    )
 
                 if self.verify_password(guess):
                     elapsed = time.perf_counter() - start_time
@@ -145,22 +195,23 @@ class PasswordCracker:
             print("[-] Error: 'target_value' in config.json is empty.")
             return
 
-        valid_targets = ("string", "zip")
+        valid_targets = ("string", "zip", "7z", "rar", "pdf")
         if self.target_type not in valid_targets:
             print(
                 f"[-] Unsupported target_type '{self.target_type}'. Use: {valid_targets}"
             )
             return
 
-        if self.target_type == "zip":
-            archive_path = self.base_dir / self.target_value
-            if not archive_path.exists():
-                print(f"[-] Target ZIP archive not found: {archive_path}")
+        # Check existence for all file targets
+        if self.target_type != "string":
+            target_file_path = self.base_dir / self.target_value
+            if not target_file_path.exists():
+                print(f"[-] Target file not found: {target_file_path}")
                 return
 
         valid_modes = ("dictionary_only", "bruteforce_only", "hybrid")
         if self.mode not in valid_modes:
-            print(f"[-]] Invalid mode '{self.mode}'. Supported modes: {valid_modes}")
+            print(f"[-] Invalid mode '{self.mode}'. Supported modes: {valid_modes}")
             return
 
         print(
