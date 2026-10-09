@@ -4,13 +4,17 @@ import string
 import time
 from pathlib import Path
 
+import pyzipper
+
 
 class PasswordCracker:
     def __init__(self, config_path: Path, base_dir: Path) -> None:
         self.base_dir = base_dir
         self.config = self._load_config(config_path)
 
-        self.target = str(self.config.get("target_password", "")).strip()
+        # Choose type and mode
+        self.target_type: str = str(self.config.get("target_type", "string")).lower()
+        self.target_value: str = str(self.config.get("target_value", "")).strip()
         self.mode = self.config.get("mode", "hybrid").lower()
 
         wordlist_name = self.config.get("wordlist_name", "100k_passwords.txt")
@@ -48,20 +52,44 @@ class PasswordCracker:
         except Exception as e:  # noqa: BLE001
             print(f"[-] Failed to load dictionary: {e}")
 
-    def check_dictionary(self) -> bool:
+    def verify_password(self, guess: str) -> bool:
+        """Universal router checks: depending on target_type."""
+        if self.target_type == "string":
+            return guess == self.target_value
+
+        if self.target_type == "zip":
+            archive_path = self.base_dir / self.target_value
+            try:
+                with pyzipper.AESZipFile(archive_path) as zf:
+                    first_file = zf.namelist()[0]
+                    zf.read(first_file, pwd=guess.encode("utf-8"))
+                    return True
+            except Exception:  # noqa: BLE001
+                return False
+
+        return False
+
+    def check_dictionary(self) -> str | None:
         """Checks for the presence of the password in the dictionary."""
         if not self._common_words:
             print("[-] Dictionary is empty or missing.")
-            return False
+            return None
 
-        print("[*] Starting dictionary search...")
+        print(f"[*] Starting dictionary search (Target type: {self.target_type})...")
+        start_time = time.perf_counter()
 
-        if self.target in self._common_words:
-            print(f"[!] MATCH FOUND IN DICTIONARY: '{self.target}'")
-            return True
+        for word in self._common_words:
+            if self.verify_password(word):
+                elapsed = time.perf_counter() - start_time
+                return (
+                    f"\n[!] MATCH FOUND IN DICTIONARY!\n"
+                    f"    Target: '{self.target_value}' ({self.target_type})\n"
+                    f"    Password: '{word}'\n"
+                    f"    Time elapsed: {elapsed:.2f}s"
+                )
 
         print("[-] Target password not found in dictionary.")
-        return False
+        return None
 
     def brute_force(self) -> str | None:
         """Iterates through combinations of symbols of a specified length."""
@@ -95,14 +123,16 @@ class PasswordCracker:
                 attempts += 1
                 guess = "".join(tuple_guess)
 
-                if guess == self.target:
+                if self.verify_password(guess):
                     elapsed = time.perf_counter() - start_time
                     speed = attempts / elapsed if elapsed > 0 else 0
                     return (
-                        f"\n[+] SUCCESS! Password cracked: '{guess}'\n"
-                        f"____Attempts: {attempts:,}\n"
-                        f"____Time elapsed: {elapsed:.2f}s\n"
-                        f"____Speed: {speed:,.0f} passwords/sec"
+                        f"\n[+] SUCCESS! Password cracked!\n"
+                        f"    Target: '{self.target_value}' ({self.target_type})\n"
+                        f"    Password: '{guess}'\n"
+                        f"    Attempts: {attempts:,}\n"
+                        f"    Time elapsed: {elapsed:.2f}s\n"
+                        f"    Speed: {speed:,.0f} attempts/sec"
                     )
 
         elapsed = time.perf_counter() - start_time
@@ -111,21 +141,37 @@ class PasswordCracker:
 
     def run(self) -> None:
         """Starts the process according to the selected mode."""
-        if not self.target:
-            print("[-] Error: 'target_password' in config.json is empty.")
+        if not self.target_value:
+            print("[-] Error: 'target_value' in config.json is empty.")
             return
+
+        valid_targets = ("string", "zip")
+        if self.target_type not in valid_targets:
+            print(
+                f"[-] Unsupported target_type '{self.target_type}'. Use: {valid_targets}"
+            )
+            return
+
+        if self.target_type == "zip":
+            archive_path = self.base_dir / self.target_value
+            if not archive_path.exists():
+                print(f"[-] Target ZIP archive not found: {archive_path}")
+                return
 
         valid_modes = ("dictionary_only", "bruteforce_only", "hybrid")
         if self.mode not in valid_modes:
             print(f"[-]] Invalid mode '{self.mode}'. Supported modes: {valid_modes}")
             return
 
-        print(f"=== Password Cracker Started (Mode: {self.mode}) ===")
+        print(
+            f"=== Password Cracker Started (Target: {self.target_type} | Mode: {self.mode}) ==="
+        )
         start_total = time.perf_counter()
 
         # 1) DICTIONARY -> (Only dictionary)
         if self.mode == "dictionary_only":
-            self.check_dictionary()
+            if result := self.check_dictionary():
+                print(result)
 
         # 2) BRUTEFORCE -> (Only bruteforce)
         elif self.mode == "bruteforce_only":
@@ -134,9 +180,12 @@ class PasswordCracker:
 
         # 3) HYBRID -> (Dictionary, if nothing found - bruteforce)
         elif self.mode == "hybrid":
-            found = self.check_dictionary()
-            if not found and (result := self.brute_force()):
+            result = self.check_dictionary()
+            if result:
                 print(result)
+            else:
+                if result_bf := self.brute_force():
+                    print(result_bf)
 
         total_elapsed = time.perf_counter() - start_total
         print(f"\n[=] Total execution time: {total_elapsed:.4f}s")
