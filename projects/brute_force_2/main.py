@@ -1,16 +1,39 @@
+import io
 import itertools
 import json
+import multiprocessing as mp
 import string
 import time
 from pathlib import Path
 
+import msoffcrypto
 import py7zr
 import pypdf
 import pyzipper
 import rarfile
 
 
-# rarfile.UNRAR_TOOL = r"C:\Program Files\WinRAR\UnRAR.exe"
+def _worker_check_password(args: tuple) -> str | None:
+    """Worker function executed across multiple CPU process pools for fast targets."""
+    word, target_type, target_value, base_dir = args
+
+    # 01) String
+    if target_type == "string":
+        return word if word == target_value else None
+
+    target_file_path = base_dir / target_value
+
+    # 2) ZIP (.zip)
+    if target_type == "zip":
+        try:
+            with pyzipper.AESZipFile(target_file_path) as zf:
+                first_file = zf.namelist()[0]
+                zf.read(first_file, pwd=word.encode("utf-8"))
+                return word
+        except Exception:  # noqa: BLE001
+            return None
+
+    return None
 
 
 class PasswordCracker:
@@ -25,7 +48,7 @@ class PasswordCracker:
 
         wordlist_name = str(self.config.get("wordlist_name", "100k_passwords.txt"))
         self.wordlist_path = self.base_dir / "data" / wordlist_name
-        self._common_words: set[str] = set()
+        self._common_words: list[str] = []
 
         if self.mode in ("dictionary_only", "hybrid"):
             self._load_wordlist()
@@ -41,7 +64,7 @@ class PasswordCracker:
             raise ValueError(f"Invalid JSON format in {path.name}: {e}") from e
 
     def _load_wordlist(self) -> None:
-        """Loads the dictionary into a set for O(1) lookup."""
+        """Loads the dictionary into a list to preserve ordering."""
         if not self.wordlist_path.exists():
             print(f"[-] Wordlist file not found: {self.wordlist_path}")
             return
@@ -51,7 +74,8 @@ class PasswordCracker:
             with self.wordlist_path.open(
                 "r", encoding="utf-8", errors="ignore"
             ) as file:
-                self._common_words = {line.strip() for line in file if line.strip()}
+                # Retain list ordering instead of set hashing
+                self._common_words = [line.strip() for line in file if line.strip()]
             elapsed = time.perf_counter() - start
             print(f"[+] Loaded {len(self._common_words):,} words ({elapsed:.3f}s).")
 
@@ -91,8 +115,10 @@ class PasswordCracker:
         if self.target_type == "rar":
             try:
                 with rarfile.RarFile(target_file_path) as rf:
-                    first_file = rf.namelist()[0]
-                    rf.read(first_file, pwd=guess)
+                    rf.setpassword(guess)
+                    info = rf.infolist()[0]
+                    with rf.open(info) as fp:
+                        fp.read(1)
                     return True
             except Exception:  # noqa: BLE001
                 return False
@@ -103,8 +129,19 @@ class PasswordCracker:
                 reader = pypdf.PdfReader(target_file_path)
                 if not reader.is_encrypted:
                     return True
-                # decrypt() return 1 or 2 if succesfully, else 0
                 return bool(reader.decrypt(guess))
+            except Exception:  # noqa: BLE001
+                return False
+
+        # 6) Microsoft Office (.docx, .xlsx, .pptx, etc.)
+        if self.target_type == "office":
+            try:
+                with open(target_file_path, "rb") as f:
+                    office_file = msoffcrypto.OfficeFile(f)
+                    office_file.load_key(password=guess)
+                    dummy = io.BytesIO()
+                    office_file.decrypt(dummy)
+                    return True
             except Exception:  # noqa: BLE001
                 return False
 
@@ -116,18 +153,55 @@ class PasswordCracker:
             print("[-] Dictionary is empty or missing.")
             return None
 
-        print(f"[*] Starting dictionary search (Target type: {self.target_type})...")
-        start_time = time.perf_counter()
+        # Parallel search for fast targets
+        if self.target_type in ("string", "zip"):
+            cpu_count = mp.cpu_count()
+            print(
+                f"[*] Starting parallel dictionary search across {cpu_count} CPU cores..."
+            )
+            start_time = time.perf_counter()
 
-        for word in self._common_words:
-            if self.verify_password(word):
-                elapsed = time.perf_counter() - start_time
-                return (
-                    f"\n[!] MATCH FOUND IN DICTIONARY!\n"
-                    f"    Target: '{self.target_value}' ({self.target_type})\n"
-                    f"    Password: '{word}'\n"
-                    f"    Time elapsed: {elapsed:.2f}s"
-                )
+            tasks = [
+                (word, self.target_type, self.target_value, self.base_dir)
+                for word in self._common_words
+            ]
+
+            with mp.Pool(processes=cpu_count) as pool:
+                for result in pool.imap_unordered(
+                    _worker_check_password, tasks, chunksize=1000
+                ):
+                    if result:
+                        pool.terminate()
+                        elapsed = time.perf_counter() - start_time
+                        return (
+                            f"\n[!] MATCH FOUND IN DICTIONARY!\n"
+                            f"    Target: '{self.target_value}' ({self.target_type})\n"
+                            f"    Password: '{result}'\n"
+                            f"    Time elapsed: {elapsed:.2f}s"
+                        )
+        else:
+            # Sequential search with progress logging for heavy formats (rar, pdf, 7z, office)
+            print(
+                f"[*] Starting sequential dictionary search for '{self.target_type}'..."
+            )
+            start_time = time.perf_counter()
+
+            for i, word in enumerate(self._common_words, 1):
+                if i % 1000 == 0:
+                    elapsed = time.perf_counter() - start_time
+                    speed = i / elapsed if elapsed > 0 else 0
+                    print(
+                        f"[*] Checked {i:,}/{len(self._common_words):,} words | Speed: {speed:,.0f} words/sec"
+                    )
+
+                if self.verify_password(word):
+                    elapsed = time.perf_counter() - start_time
+                    return (
+                        f"\n[!] MATCH FOUND IN DICTIONARY!\n"
+                        f"    Target: '{self.target_value}' ({self.target_type})\n"
+                        f"    Password: '{word}'\n"
+                        f"    Time elapsed: {elapsed:.2f}s"
+                    )
 
         print("[-] Target password not found in dictionary.")
         return None
@@ -164,7 +238,6 @@ class PasswordCracker:
                 attempts += 1
                 guess = "".join(tuple_guess)
 
-                # Print progress every 10,000 attempts to show activity
                 if attempts % 10000 == 0:
                     elapsed = time.perf_counter() - start_time
                     speed = attempts / elapsed if elapsed > 0 else 0
@@ -195,14 +268,13 @@ class PasswordCracker:
             print("[-] Error: 'target_value' in config.json is empty.")
             return
 
-        valid_targets = ("string", "zip", "7z", "rar", "pdf")
+        valid_targets = ("string", "zip", "7z", "rar", "pdf", "office")
         if self.target_type not in valid_targets:
             print(
                 f"[-] Unsupported target_type '{self.target_type}'. Use: {valid_targets}"
             )
             return
 
-        # Check existence for all file targets
         if self.target_type != "string":
             target_file_path = self.base_dir / self.target_value
             if not target_file_path.exists():
@@ -244,6 +316,7 @@ class PasswordCracker:
 
 def main() -> None:
     """Entry point. Settings are managed in config.json."""
+    rarfile.UNRAR_TOOL = r"C:\Program Files\WinRAR\UnRAR.exe"
     base_dir = Path(__file__).resolve().parent
     config_path = base_dir / "config.json"
 
@@ -255,4 +328,5 @@ def main() -> None:
 
 
 if __name__ == "__main__":
+    mp.freeze_support()
     main()
