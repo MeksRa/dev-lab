@@ -1,3 +1,5 @@
 -r projects/website_status/requirements.txt
--r projects/website_status_asyncio/requirements.txt
+-r projects/website_status_2/requirements.txt
+-r projects/website_status_3/requirements.txt
+-r projects/qr_code_generator/requirements.txt
 mypy
