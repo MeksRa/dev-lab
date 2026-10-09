@@ -1,10 +1,11 @@
 {
-  "target_password": "privet1",
+  "target_type": "zip",
+  "target_value": "data/123456.zip",
   "wordlist_name": "100k_passwords.txt",
   "mode": "hybrid",
   "min_length": 1,
-  "max_length": 5,
-  "use_digits": false,
+  "max_length": 6,
+  "use_digits": true,
   "use_uppercase": false,
   "use_symbols": false
 }
