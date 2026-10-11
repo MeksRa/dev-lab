@@ -64,7 +64,7 @@ def _worker_batch_check(args: tuple) -> str | None:
                     first_file = zf.namelist()[0]
                     zf.read(first_file, pwd=word.encode("utf-8"))
                     return word
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001, S110
                 pass
         return None
 
@@ -74,7 +74,7 @@ def _worker_batch_check(args: tuple) -> str | None:
                 with py7zr.SevenZipFile(target_file_path, mode="r", password=word) as szf:
                     if szf.testzip() is None:
                         return word
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001, S110
                 pass
         return None
 
@@ -87,7 +87,7 @@ def _worker_batch_check(args: tuple) -> str | None:
                     with rf.open(info) as fp:
                         fp.read(1)
                     return word
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001, S110
                 pass
         return None
 
@@ -97,7 +97,7 @@ def _worker_batch_check(args: tuple) -> str | None:
                 reader = pypdf.PdfReader(target_file_path)
                 if not reader.is_encrypted or reader.decrypt(word):
                     return word
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001, S110
                 pass
         return None
 
@@ -110,7 +110,7 @@ def _worker_batch_check(args: tuple) -> str | None:
                     dummy = io.BytesIO()
                     office_file.decrypt(dummy)
                     return word
-            except Exception:  # noqa: BLE001
+            except Exception:  # noqa: BLE001, S110
                 pass
         return None
 
@@ -169,14 +169,14 @@ class PasswordCracker:
                 with pyzipper.AESZipFile(target_file_path) as zf:
                     zf.read(zf.namelist()[0], pwd=guess.encode("utf-8"))
                     return True
-            except Exception:
+            except Exception:  # noqa: BLE001
                 return False
 
         if self.target_type == "7z":
             try:
                 with py7zr.SevenZipFile(target_file_path, mode="r", password=guess) as szf:
                     return szf.testzip() is None
-            except Exception:
+            except Exception:  # noqa: BLE001
                 return False
 
         if self.target_type == "rar":
@@ -187,7 +187,7 @@ class PasswordCracker:
                     with rf.open(info) as fp:
                         fp.read(1)
                     return True
-            except Exception:
+            except Exception:  # noqa: BLE001
                 return False
 
         if self.target_type == "pdf":
@@ -196,7 +196,7 @@ class PasswordCracker:
                 if not reader.is_encrypted:
                     return True
                 return bool(reader.decrypt(guess))
-            except Exception:
+            except Exception:  # noqa: BLE001
                 return False
 
         if self.target_type == "office":
@@ -207,7 +207,7 @@ class PasswordCracker:
                     dummy = io.BytesIO()
                     office_file.decrypt(dummy)
                     return True
-            except Exception:
+            except Exception:  # noqa: BLE001
                 return False
 
         return False
@@ -395,3 +395,7 @@ def main() -> None:
 if __name__ == "__main__":
     mp.freeze_support()
     main()
+
+
+
+# python main.py data/123456.rar
