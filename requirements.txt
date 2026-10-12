@@ -5,6 +5,8 @@
 -r projects/image_downloader/requirements.txt
 -r projects/image_downloader_2/requirements.txt
 -r projects/tax_calculator/requirements.txt
+-r projects/sentiment_analysis_bot/requirements.txt
+-r projects/url_shortener/requirements.txt
 
 -r projects/brute_force_2/requirements.txt
 
