@@ -10,5 +10,6 @@
 -r projects/pdf_reader/requirements.txt
 -r projects/brute_force_2/requirements.txt
 -r projects/email_scraper/requirements.txt
+-r projects/cryptocurrency_alerter/requirements.txt
 
 mypy
