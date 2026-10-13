@@ -7,7 +7,7 @@
 -r projects/tax_calculator/requirements.txt
 -r projects/sentiment_analysis_bot/requirements.txt
 -r projects/url_shortener/requirements.txt
-
+-r projects/pdf_reader/requirements.txt
 -r projects/brute_force_2/requirements.txt
 
 mypy
