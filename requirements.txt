@@ -9,5 +9,6 @@
 -r projects/url_shortener/requirements.txt
 -r projects/pdf_reader/requirements.txt
 -r projects/brute_force_2/requirements.txt
+-r projects/email_scraper/requirements.txt
 
 mypy
