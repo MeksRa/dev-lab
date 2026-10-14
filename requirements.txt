@@ -12,5 +12,6 @@
 -r projects/email_scraper/requirements.txt
 -r projects/cryptocurrency_alerter/requirements.txt
 -r projects/public_api/requirements.txt
+-r projects/habit_tracker/requirements.txt
 
 mypy
