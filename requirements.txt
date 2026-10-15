@@ -13,5 +13,5 @@
 -r projects/cryptocurrency_alerter/requirements.txt
 -r projects/public_api/requirements.txt
 -r projects/habit_tracker/requirements.txt
-
+-r projects/currency_coverter/requirements.txt
 mypy
