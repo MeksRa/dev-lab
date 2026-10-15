@@ -15,4 +15,5 @@
 -r projects/habit_tracker/requirements.txt
 -r projects/currency_coverter/requirements.txt
 -r projects/headline_scraper/requirements.txt
+-r projects/distance_calculator/requirements.txt
 mypy
