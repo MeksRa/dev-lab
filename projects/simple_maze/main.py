@@ -90,7 +90,7 @@ def main() -> None:
                 if target_cell != "#":  # If this is a passageway or an exit
                     player_x, player_y = new_x, new_y
 
-                    # Step 4: Check for a win (if landing on the 'X' square)
+                    # Check for a win (if landing on the 'X' square)
                     if target_cell == "X":
                         os.system("cls")
                         print("VICTORY! You have escaped the labyrinth!")
