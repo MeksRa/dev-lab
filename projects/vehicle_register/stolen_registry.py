@@ -54,6 +54,6 @@ class StolenRegistry:
     def is_stolen(self, plate_number: str) -> tuple[bool, str | None]:
         """Checks if a vehicle is stolen. Returns (True/False, reason)"""
         plate = plate_number.strip().upper()
-        if plate is self.stolen_plates:
+        if plate in self.stolen_plates:
             return True, self.stolen_plates[plate]
         return False, None
