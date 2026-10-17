@@ -1,0 +1,30 @@
+[
+    {
+        "car_id": "101",
+        "brand": "BMW",
+        "model": "m3",
+        "year": 2018,
+        "price": 20000000.0,
+        "colors": [
+            "black",
+            "white"
+        ],
+        "engine": "w12",
+        "horsepower": 200,
+        "transmission": "Automatic"
+    },
+    {
+        "car_id": "230",
+        "brand": "Volvo",
+        "model": "g15",
+        "year": 1919,
+        "price": 1000.0,
+        "colors": [
+            "green",
+            "yellow"
+        ],
+        "engine": "2.0 original",
+        "horsepower": 3,
+        "transmission": "manual"
+    }
+]
