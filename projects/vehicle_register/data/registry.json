@@ -1,0 +1,24 @@
+[
+    {
+        "plate_number": "A823812389",
+        "brand": "BMW",
+        "model": "m3",
+        "year": 1999,
+        "owner": "SANYA BELIY",
+        "color": "BLACK",
+        "engine": "W8",
+        "horsepower": 1000,
+        "transmission": "manual"
+    },
+    {
+        "plate_number": "FJJS132",
+        "brand": "Volvo",
+        "model": "yooy",
+        "year": 1919,
+        "owner": "Barak Obama",
+        "color": "blue",
+        "engine": "Turbo 30",
+        "horsepower": 90,
+        "transmission": "manual"
+    }
+]
