@@ -16,4 +16,5 @@
 -r projects/currency_coverter/requirements.txt
 -r projects/headline_scraper/requirements.txt
 -r projects/distance_calculator/requirements.txt
+-r projects/value_prediction/requirements.txt
 mypy
