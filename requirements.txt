@@ -17,4 +17,5 @@
 -r projects/headline_scraper/requirements.txt
 -r projects/distance_calculator/requirements.txt
 -r projects/value_prediction/requirements.txt
+-r projects/telegram_simple_bot/requirements.txt
 mypy
