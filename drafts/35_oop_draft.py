@@ -30,10 +30,23 @@ class StrengthPotion(Potion):
 
 
 
-class Weapon(Item): ...
+class Weapon(Item):
+    def __init__(self, name: str, slots: int, damage: int) -> None:
+        super().__init__(name, slots)
+        self.damage = damage
 
-class OneHanded(Weapon): ...
-class TwoHanded(Weapon): ...
+    def __str__(self) -> str:
+        base_str = super().__str__()[:-1]
+        return f"{base_str}, Damage: {self.damage})"
+
+class OneHanded(Weapon):
+    def __init__(self, name: str, damage: int) -> None:
+        super().__init__(name, slots = 2, damage = damage)
+class TwoHanded(Weapon):
+    def __init__(self, name: str, damage: int) -> None:
+        super().__init__(name, slots = 4, damage = damage)
+
+
 
 class Armor(Item):
     def __init__(self, name: str, slots: int, protection: int) -> None:
@@ -41,7 +54,8 @@ class Armor(Item):
         self.protection = protection
 
     def __str__(self) -> str:
-        return f"{self.name} (Slots: {self.slots}, Protection: {self.protection})"
+        base_str = super().__str__()[:-1]
+        return f"{base_str}, Protection: {self.protection})"
     
 class Helmet(Armor):
     def __init__(self, name: str, protection: int) -> None:
@@ -58,7 +72,7 @@ class Shoes(Armor):
 
 
 class Inventory:
-    def __init__(self, max_slots: int = 10) -> None:
+    def __init__(self, max_slots: int = 50) -> None:
         self.max_slots = max_slots
         self.items: list[Item] = []
 
@@ -108,6 +122,9 @@ def main() -> None:
     health_potion = HealthPotion("Health Potion", 100)
     big_strength_potion = StrengthPotion("Big Strength Potion", 200)
     strength_potion = StrengthPotion("Strength Potion", 100)
+    # ---
+    silver_sword = OneHanded("Silver Sword", 80)
+    dragon_sword = TwoHanded("Dragon Sword", 160)
     # ---
 
 if __name__ == "__main__":
