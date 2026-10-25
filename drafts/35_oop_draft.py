@@ -9,6 +9,7 @@ class Item:
 
 class Potion(Item): ...
 
+
 class HealthPotion(Potion):
     def __init__(self, name: str, heal: int) -> None:
         super().__init__(name)
@@ -17,7 +18,8 @@ class HealthPotion(Potion):
     def __str__(self) -> str:
         base_str = super().__str__()[:-1]
         return f"{base_str}, Heal: {self.heal})"
-    
+
+
 class StrengthPotion(Potion):
     def __init__(self, name: str, strength_bonus: int) -> None:
         super().__init__(name)
@@ -26,8 +28,6 @@ class StrengthPotion(Potion):
     def __str__(self) -> str:
         base_str = super().__str__()[:-1]
         return f"{base_str}, Strength: {self.strength_bonus})"
-
-
 
 
 class Weapon(Item):
@@ -39,13 +39,15 @@ class Weapon(Item):
         base_str = super().__str__()[:-1]
         return f"{base_str}, Damage: {self.damage})"
 
+
 class OneHanded(Weapon):
     def __init__(self, name: str, damage: int) -> None:
-        super().__init__(name, slots = 2, damage = damage)
+        super().__init__(name, slots=2, damage=damage)
+
+
 class TwoHanded(Weapon):
     def __init__(self, name: str, damage: int) -> None:
-        super().__init__(name, slots = 4, damage = damage)
-
+        super().__init__(name, slots=4, damage=damage)
 
 
 class Armor(Item):
@@ -56,19 +58,26 @@ class Armor(Item):
     def __str__(self) -> str:
         base_str = super().__str__()[:-1]
         return f"{base_str}, Protection: {self.protection})"
-    
+
+
 class Helmet(Armor):
     def __init__(self, name: str, protection: int) -> None:
-        super().__init__(name, slots = 2, protection = protection)
+        super().__init__(name, slots=2, protection=protection)
+
+
 class Trousers(Armor):
     def __init__(self, name: str, protection: int) -> None:
-        super().__init__(name, slots = 4, protection = protection)
+        super().__init__(name, slots=4, protection=protection)
+
+
 class BreastPlate(Armor):
     def __init__(self, name: str, protection: int) -> None:
-        super().__init__(name, slots = 5, protection = protection)
+        super().__init__(name, slots=5, protection=protection)
+
+
 class Shoes(Armor):
     def __init__(self, name: str, protection: int) -> None:
-        super().__init__(name, slots = 2, protection = protection)
+        super().__init__(name, slots=2, protection=protection)
 
 
 class Inventory:
@@ -78,19 +87,20 @@ class Inventory:
 
     def add_item(self, item: Item) -> str:
         current_used_slots = sum(i.slots for i in self.items)
-        
+
         if current_used_slots + item.slots > self.max_slots:
             return "Not enough slots in inventory."
 
         self.items.append(item)
-        return f"{item} added to inventory."
+        return f"{item} added to inventory[{current_used_slots + item.slots}/{self.max_slots}]."
 
     def remove_item(self, item: Item) -> str:
         if not item in self.items:
             return "Item not found"
 
+        current_used_slots = sum(i.slots for i in self.items)
         self.items.remove(item)
-        return f"{item} removed from inventory."
+        return f"{item} removed from inventory[{current_used_slots - item.slots}/{self.max_slots}]."
 
     def show_items(self) -> str:
         if not self.items:
@@ -126,6 +136,35 @@ def main() -> None:
     silver_sword = OneHanded("Silver Sword", 80)
     dragon_sword = TwoHanded("Dragon Sword", 160)
     # ---
+    print("============= Inventory =============")
+    print(inv)
+    print(inv.add_item(dragon_helmet))
+    print(inv.add_item(silver_sword))
+    print(inv.add_item(big_health_potion))
+    print(inv.add_item(leather_trousers))
+    print(inv.remove_item(leather_trousers))
+    print("=====================================")
+    print(inv.show_items())
+    print()
+    print(inv)
+
 
 if __name__ == "__main__":
     main()
+
+
+# OUTPUT:
+# ============= Inventory =============
+# Inventory: 0/50 slots used
+# Dragon helmet (Slots: 2, Protection: 30) added to inventory[2/50].
+# Silver Sword (Slots: 2, Damage: 80) added to inventory[4/50].
+# Big Health Potion (Slots: 1, Heal: 200) added to inventory[5/50].
+# leather trousers (Slots: 4, Protection: 30) added to inventory[9/50].
+# leather trousers (Slots: 4, Protection: 30) removed from inventory[5/50].
+# =====================================
+# Items in inventory:
+# - Dragon helmet (Slots: 2, Protection: 30)
+# - Silver Sword (Slots: 2, Damage: 80)
+# - Big Health Potion (Slots: 1, Heal: 200)
+
+# Inventory: 5/50 slots used
