@@ -19,4 +19,5 @@
 -r projects/value_prediction/requirements.txt
 -r projects/telegram_simple_bot/requirements.txt
 -r projects/discord_simple_bot/requirements.txt
+-r projects/dodge_square/requirements.txt
 mypy
