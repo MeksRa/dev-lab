@@ -1,4 +1,5 @@
 from dataclasses import dataclass
+from typing import Self
 
 
 @dataclass
@@ -24,6 +25,14 @@ class Book:
     def calculate_progress(current: int, total: int) -> float:
         """Calcucate percent of reading"""
         return round((current / total) * 100, 1)
+
+    @classmethod
+    def from_string(cls, book_str: str) -> Self:
+        """Create an object from string 'Title | Author | Pages'"""
+        parts = [p.strip() for p in book_str.split("|")]
+        if len(parts) != 3:
+            raise ValueError("Invalid string format. Use 'Title | Author | Pages'")
+        return cls(title=parts[0], author=parts[1], total_pages=int(parts[2]))
 
     def __str__(self) -> str:
         progress = self.calculate_progress(self._current_page, self.total_pages)
@@ -53,6 +62,14 @@ class Library:
         """Returns a list of all books"""
         return self._books
 
+    @classmethod
+    def create_classic_library(cls) -> Self:
+        """Fabric method: creates classic library"""
+        lib = cls("Classic Library")
+        lib.add_book(Book("Some_book", "Some_author", 1300))
+        lib.add_book(Book("Some_book_2", "Some_author_2", 1230))
+        return lib
+
     @property
     def book_count(self) -> int:
         """Count books in a list"""
@@ -79,16 +96,22 @@ class LibraryManager:
         """Get all libraries"""
         return self._libraries
 
+
 def main() -> None:
     book1 = Book("Book1", "Author1", 100)
     book2 = Book("Book2", "Author2", 200)
+    book3 = Book.from_string("Unknown_book | Unknown_author | 1579")
 
     library1 = Library("Library1")
+    classic_lib = Library.create_classic_library()
+
     library1.add_book(book1)
     library1.add_book(book2)
+    classic_lib.add_book(book3)
 
     lib_manager = LibraryManager()
     lib_manager.add_library(library1)
+    lib_manager.add_library(classic_lib)
 
     for library in lib_manager.get_libraries():
         print(Library.format_library_info(library))
@@ -96,3 +119,12 @@ def main() -> None:
 
 if __name__ == "__main__":
     main()
+
+# OUTPUT:
+# Library: Library1 (Books: 2)
+# 'Book1' - Author1 (Progress: 0.0%)
+# 'Book2' - Author2 (Progress: 0.0%)
+# Library: Classic Library (Books: 3)
+# 'Some_book' - Some_author (Progress: 0.0%)
+# 'Some_book_2' - Some_author_2 (Progress: 0.0%)
+# 'Unknown_book' - Unknown_author (Progress: 0.0%)
