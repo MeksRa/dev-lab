@@ -19,6 +19,7 @@ class Track:
 
     @staticmethod
     def format_duration(seconds: int) -> str:
+        """Formats duration"""
         minutes = seconds // 60
         secs = seconds % 60
         return f"{minutes}:{secs:02d}"
@@ -34,13 +35,15 @@ class Playlist:
         self._tracks: list[Track] = []
 
     def add_track(self, track: Track) -> None:
+        """Adds track to list"""
         self._tracks.append(track)
 
     def remove_track(self, track: Track) -> None:
+        """Removes track from list"""
         self._tracks = [item for item in self._tracks if item.title != track.title]
 
     def get_tracks(self) -> list["Track"]:
-        """returns list of Tracks"""
+        """Returns list of Tracks"""
         return self._tracks
 
     @property
@@ -53,6 +56,7 @@ class Playlist:
 
     @staticmethod
     def format_playlist_info(playlist: "Playlist") -> str:
+        """Returns formatted playlist info"""
         duration_str = Track.format_duration(playlist.total_duration)
         lines = [
             f"Playlist: {playlist.name} (Tracks: {playlist.track_count}, time: {duration_str})"
@@ -67,9 +71,11 @@ class MusicLibrary:
         self._playlists: list[Playlist] = []
 
     def add_playlist(self, playlist: Playlist) -> None:
+        """Adds playlist to list"""
         self._playlists.append(playlist)
 
     def get_playlists(self) -> list[Playlist]:
+        """Get all playlists"""
         return self._playlists
 
 
