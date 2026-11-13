@@ -10,22 +10,26 @@ class Product:
 
     @property
     def price(self) -> float:
+        """Getter. Returns price"""
         return self._price
 
     @price.setter
     def price(self, value: float) -> None:
+        """Setter. Sets price, checks if it > 0"""
         if value < 0:
             raise ValueError("Cannot be below zero")
         self._price = value
 
     @staticmethod
     def format_price(amount: float) -> str:
+        """Returns formatted price"""
         return f"${amount:.2f}"
 
     @classmethod
     def create_with_discount(
         cls, name: str, base_price: float, discount_percent: float
     ) -> Self:
+        """Alternative constructor. Creates object with discount"""
         final_price = base_price * (1 - discount_percent / 100)
         return cls(name=name, _price=final_price, stock=10)
 
@@ -35,6 +39,7 @@ class ShoppingCart:
         self._items: list[Product] = []
 
     def add_item(self, product: Product) -> None:
+        """Adds item to self._items"""
         if product.stock > 0:
             self._items.append(product)
             print(f"'{product.name}' has been added")
@@ -42,15 +47,18 @@ class ShoppingCart:
             print(f"'{product.name}' has already been sold")
 
     def remove_item(self, product_name: str) -> None:
+        """Removes item from self._items"""
         self._items = [item for item in self._items if item.name != product_name]
         print(f"'{product_name}' has been removed")
 
     @property
     def total(self) -> float:
+        """Returns sum of all items in self._items"""
         return sum(item.price for item in self._items)
 
     @property
     def count(self) -> int:
+        """Counts items in self._items and returns integer"""
         return len(self._items)
 
     def __str__(self) -> str:
