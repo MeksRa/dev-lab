@@ -48,9 +48,11 @@ class CoffeeMachine:
         self.menu: list[Coffee] = []
 
     def add_recipe(self, coffee: Coffee) -> None:
+        """Adds recipe to menu"""
         self.menu.append(coffee)
 
     def show_menu(self) -> str:
+        """Returns formatted menu"""
         if not self.menu:
             return "Menu is empty"
         lines = ["Menu:"]
@@ -59,6 +61,7 @@ class CoffeeMachine:
         return "\n".join(lines)
 
     def make_coffee(self, choice_index: int, inserted_money: float) -> str:
+        """Making coffee (main logic)"""
         index = choice_index - 1
         if not (0 <= index < len(self.menu)):
             return "Error. There is no such drink."
