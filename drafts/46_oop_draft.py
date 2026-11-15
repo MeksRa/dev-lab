@@ -6,6 +6,7 @@ class Monitor:
         self.is_on: bool = False
 
     def toggle_power(self) -> None:
+        """Turns on/off the monitor"""
         self.is_on = not self.is_on
 
     def __str__(self) -> str:
@@ -19,6 +20,7 @@ class Mouse:
         self.dpi = dpi
 
     def click(self) -> str:
+        """Simulates mouse clicking"""
         return f"Mouse {self.brand}: click!"
 
     def __str__(self) -> str:
@@ -31,6 +33,7 @@ class Keyboard:
         self.has_rgb = has_rgb
 
     def type_text(self, text: str) -> str:
+        """Simulates typing smth"""
         return f"Typing ({self.switch_type}): '{text}'"
 
     def __str__(self) -> str:
@@ -50,16 +53,19 @@ class Computer:
         self.is_power_on: bool = False
 
     def power_on(self) -> None:
+        """Turns on the computer"""
         self.is_power_on = True
         self.monitor.is_on = True
         print(f"Computer'{self.name}' starts up..")
 
     def power_off(self) -> None:
+        """Turns off the computer"""
         self.is_power_on = False
         self.monitor.is_on = False
         print(f"Computer '{self.name}' turns off.")
 
     def get_system_status(self) -> str:
+        """Returns formatted status-string"""
         pc_status = "ON" if self.is_power_on else "OFF"
         lines = [
             f"=== System: {self.name} ===",
