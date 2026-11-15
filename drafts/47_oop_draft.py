@@ -5,9 +5,11 @@ class Lamp:
         self.brightness: int = 100
 
     def toggle(self) -> None:
+        """Turns on/off the lamp"""
         self.is_on = not self.is_on
 
     def set_brightness(self, level: int) -> None:
+        """Sets brightness (0-100)"""
         if 0 <= level <= 100:
             self.brigthness = level
 
@@ -26,19 +28,23 @@ class RemoteControl:
         self.lamps.append(lamp)
 
     def toggle_lamp(self, index: int) -> None:
+        """Turns on/off a specific lamp"""
         lamp_idx = index - 1
         if 0 <= lamp_idx < len(self.lamps):
             self.lamps[lamp_idx].toggle()
 
     def turn_all_on(self) -> None:
+        """Turns on all lamps"""
         for lamp in self.lamps:
             lamp.is_on = True
 
     def turn_all_off(self) -> None:
+        """Turns off all lamps"""
         for lamp in self.lamps:
             lamp.is_on = False
 
     def show_status(self) -> str:
+        """Returns formatted status-string"""
         if not self.lamps:
             return f"Remote Controller '{self.model}': no paired lamps"
         lines = [f"Remote Controller '{self.model}' - Lamp condition:"]
