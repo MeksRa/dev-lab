@@ -4,9 +4,11 @@ class Task:
         self.is_done = False
 
     def toggle(self) -> None:
+        """Toggles task"""
         self.is_done = not self.is_done
 
     def get_status(self) -> str:
+        """Returns status (Done / In progress)"""
         return "Done" if self.is_done else "In progress"
 
     def __str__(self) -> str:
@@ -18,11 +20,13 @@ class TaskManager:
         self.tasks: list[Task] = []
 
     def add_task(self, title: str) -> Task:
+        """Adds task to task list"""
         task = Task(title)
         self.tasks.append(task)
         return task
 
     def remove_task(self, task_num: int) -> bool:
+        """Removes task from task list"""
         index = task_num - 1
         if 0 <= index < len(self.tasks):
             self.tasks.pop(index)
@@ -30,15 +34,18 @@ class TaskManager:
         return False
 
     def get_task(self, task_num: int) -> Task | None:
+        """Returns task or None"""
         index = task_num - 1
         if 0 <= index < len(self.tasks):
             return self.tasks[index]
         return None
 
     def get_tasks(self) -> list[Task]:
+        """Returns tasks"""
         return self.tasks
 
     def toggle_task(self, task_num: int) -> bool:
+        """Toggles task"""
         task = self.get_task(task_num)
         if task:
             task.toggle()
@@ -46,6 +53,7 @@ class TaskManager:
         return False
 
     def get_display_list(self) -> str:
+        """Returns formatted status-string"""
         if not self.tasks:
             return "No tasks yet."
         lines = ["Tasks:"]
