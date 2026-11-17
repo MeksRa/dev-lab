@@ -5,6 +5,7 @@ class Task:
         self.is_done = False
 
     def mark_as_done(self) -> None:
+        """Marks task as True"""
         self.is_done = True
 
     def __str__(self) -> str:
