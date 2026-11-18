@@ -5,18 +5,21 @@ class Microwave:
         self.turned_on: bool = False
 
     def turn_on(self) -> str:
+        """Simulates turning on the microwave"""
         if self.turned_on:
             return f'"{self.brand}" is already turned on!'
         self.turned_on = True
         return f'"{self.brand}" is turned on!'
 
     def turn_off(self) -> str:
+        """Simulates turning off the microwave"""
         if not self.turned_on:
             return f'"{self.brand}" is already turned off!'
         self.turned_on = False
         return f'"{self.brand}" is turned off!'
 
     def run(self, seconds: int) -> str:
+        """Simulates working process of the microwave"""
         if self.turned_on:
             return f'Running "{self.brand}" for "{seconds} seconds'
         return "Turn on your Microwave first!"
